@@ -3,59 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Design Hub Interactive</title>
+    <title>Design Hub - Interactive Card</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         body {
             margin: 0;
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background-color: #0b132b; /* لون المجرة */
+            background-color: #0b132b;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden; /* لمنع ظهور أشرطة التمرير عند هروب الزر */
+            overflow: hidden; /* يمنع ظهور السكرول */
+            position: relative;
         }
 
         h2 {
             color: #ffffff;
             text-align: center;
             margin-bottom: 50px;
-            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+            z-index: 10;
         }
 
         .btn-container {
             position: relative;
-            width: 100%;
-            height: 300px; /* مساحة كافية للهروب */
+            width: 100vw;
+            height: 50vh;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
         button {
-            /* تثبيت الحجم */
-            width: 100px;
-            height: 50px;
+            width: 110px;
+            height: 55px;
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            border-radius: 12px;
+            border-radius: 15px;
             border: none;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* حركة مرنة */
+            transition: all 0.2s ease-out;
+            z-index: 20;
         }
 
         #yesBtn {
             background: linear-gradient(45deg, #28a745, #5ddc74);
             color: white;
-            margin-right: 120px; /* لإبعاد نعم عن لا في البداية */
+            margin-right: 140px;
         }
 
         #noBtn {
             background: linear-gradient(45deg, #dc3545, #ff6b6b);
             color: white;
-            position: absolute; /* ضروري للهروب */
+            position: absolute;
         }
     </style>
 </head>
@@ -72,21 +75,49 @@
         function moveNo() {
             const btn = document.getElementById('noBtn');
             
-            // جعل الزر يهرب بعيداً عن مكان الفأرة الحالي بمسافة عشوائية كبيرة
-            // استخدمنا 80% من طول وعرض الشاشة لضمان عدم خروجه تماماً
-            const x = Math.random() * (window.innerWidth - btn.offsetWidth - 20);
-            const y = Math.random() * (window.innerHeight - btn.offsetHeight - 20);
+            // تحديد منطقة آمنة (Safe Zone) ليبقى الزر داخل الشاشة بنسبة 100%
+            const padding = 20;
+            const maxWidth = window.innerWidth - btn.offsetWidth - padding;
+            const maxHeight = window.innerHeight - btn.offsetHeight - padding;
             
-            btn.style.left = x + 'px';
-            btn.style.top = y + 'px';
+            // توليد إحداثيات عشوائية داخل المنطقة الآمنة فقط
+            const randomX = Math.max(padding, Math.floor(Math.random() * maxWidth));
+            const randomY = Math.max(padding, Math.floor(Math.random() * maxHeight));
+            
+            btn.style.left = randomX + 'px';
+            btn.style.top = randomY + 'px';
         }
 
         function celebrate() {
             const msg = document.getElementById('msg');
             msg.innerHTML = "كفو! العيدية في الطريق 💸❤️";
-            msg.style.color = "#FFD700"; // تغيير اللون للذهبي
+            msg.style.color = "#FFD700";
+            msg.style.fontSize = "2rem";
+
             document.getElementById('noBtn').style.display = 'none';
-            document.getElementById('yesBtn').style.transform = 'scale(1.5)';
+            document.getElementById('yesBtn').style.transform = 'scale(1.2)';
+
+            // إطلاق الألعاب النارية
+            var duration = 5 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInRange(min, max) {
+              return Math.random() * (max - min) + min;
+            }
+
+            var interval = setInterval(function() {
+              var timeLeft = animationEnd - Date.now();
+
+              if (timeLeft <= 0) {
+                return clearInterval(interval);
+              }
+
+              var particleCount = 50 * (timeLeft / duration);
+              // إطلاق من جهتين مختلفتين
+              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
         }
     </script>
 </body>
