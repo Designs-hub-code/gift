@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Hub Interactive</title>
     <style>
         body {
             margin: 0;
@@ -10,34 +11,51 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 300px; /* مناسب لمساحة Embed في كانفا */
-            background: transparent; /* ليتناسب مع خلفية تصميمك */
-            font-family: sans-serif;
-            overflow: hidden;
+            height: 100vh;
+            background-color: #0b132b; /* لون المجرة */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; /* لمنع ظهور أشرطة التمرير عند هروب الزر */
         }
-        h2 { color: #fff; text-shadow: 2px 2px 4px #000; font-size: 1.2rem; text-align: center; }
-        .btn-container { position: relative; width: 100%; height: 150px; margin-top: 20px; }
+
+        h2 {
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 50px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        .btn-container {
+            position: relative;
+            width: 100%;
+            height: 300px; /* مساحة كافية للهروب */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
         button {
-            padding: 10px 20px;
-            font-size: 16px;
+            /* تثبيت الحجم */
+            width: 100px;
+            height: 50px;
+            font-size: 18px;
+            font-weight: bold;
             cursor: pointer;
-            border-radius: 8px;
+            border-radius: 12px;
             border: none;
-            position: absolute;
-            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* حركة مرنة */
         }
+
         #yesBtn {
-            background-color: #28a745;
+            background: linear-gradient(45deg, #28a745, #5ddc74);
             color: white;
-            left: 20%;
-            top: 40%;
-            z-index: 10;
+            margin-right: 120px; /* لإبعاد نعم عن لا في البداية */
         }
+
         #noBtn {
-            background-color: #dc3545;
+            background: linear-gradient(45deg, #dc3545, #ff6b6b);
             color: white;
-            right: 20%;
-            top: 40%;
+            position: absolute; /* ضروري للهروب */
         }
     </style>
 </head>
@@ -53,22 +71,22 @@
     <script>
         function moveNo() {
             const btn = document.getElementById('noBtn');
-            const container = document.querySelector('.btn-container');
             
-            // حساب حدود الحركة داخل مساحة الـ Embed فقط
-            const maxX = container.clientWidth - btn.offsetWidth;
-            const maxY = container.clientHeight - btn.offsetHeight;
+            // جعل الزر يهرب بعيداً عن مكان الفأرة الحالي بمسافة عشوائية كبيرة
+            // استخدمنا 80% من طول وعرض الشاشة لضمان عدم خروجه تماماً
+            const x = Math.random() * (window.innerWidth - btn.offsetWidth - 20);
+            const y = Math.random() * (window.innerHeight - btn.offsetHeight - 20);
             
-            const newX = Math.random() * maxX;
-            const newY = Math.random() * maxY;
-            
-            btn.style.left = newX + 'px';
-            btn.style.top = newY + 'px';
+            btn.style.left = x + 'px';
+            btn.style.top = y + 'px';
         }
 
         function celebrate() {
-            document.getElementById('msg').innerHTML = "كفو! العيدية في الطريق 💸❤️";
-            document.querySelector('.btn-container').style.display = 'none';
+            const msg = document.getElementById('msg');
+            msg.innerHTML = "كفو! العيدية في الطريق 💸❤️";
+            msg.style.color = "#FFD700"; // تغيير اللون للذهبي
+            document.getElementById('noBtn').style.display = 'none';
+            document.getElementById('yesBtn').style.transform = 'scale(1.5)';
         }
     </script>
 </body>
